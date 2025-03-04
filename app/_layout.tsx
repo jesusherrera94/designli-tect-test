@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 import { Auth0Provider} from 'react-native-auth0';
 import config from '../auth-config.js';
 import { FinhubConfigsProvider } from '../context/FinhubProvider';
+import { LocalStorageProvider } from '../context/LocalStorage';
 
 
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -33,16 +34,18 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <FinhubConfigsProvider>
-      <Auth0Provider domain={config.domain} clientId={config.clientId}>
-      <Stack >
-      <Stack.Screen name="index" redirect/>
-        <Stack.Screen name="login" />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      </Auth0Provider>
-      </FinhubConfigsProvider>
+      <LocalStorageProvider>
+        <FinhubConfigsProvider>
+          <Auth0Provider domain={config.domain} clientId={config.clientId}>
+            <Stack >
+              <Stack.Screen name="index" redirect />
+              <Stack.Screen name="login" />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </Auth0Provider>
+        </FinhubConfigsProvider>
+      </LocalStorageProvider>
       <StatusBar style="auto" />
     </ThemeProvider>
   );

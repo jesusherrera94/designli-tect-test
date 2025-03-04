@@ -37,6 +37,10 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "auth0Domain": "dev-wnzjldia6px0t3e5.us.auth0.com",
+      "auth0ClientId": "T9ue4U7CtBjBmkSRbt97eZC5VscZmFsh"
     }
   }
 }
