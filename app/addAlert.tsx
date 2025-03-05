@@ -5,23 +5,51 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useAlerts } from '../hooks/useAlerts';
+import { useFinhubConfigs } from '@/hooks/useFinhubConfigs';
+import { StockSymbols } from '@/interfaces/StockSymbols';
 
 interface AddAlertScreenProps {
   navigation: any;
   onAlertAdded: (alert: { stock: string; price: number }) => void;
 }
 
+
  export default function addAlert () {
-    const [stock, setStock] = useState('AAPL');
+    const [stock, setStock] = useState('');
     const [price, setPrice] = useState('');
+    const [stockSymbols, setStockSymbols] = useState<StockSymbols[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const { addAlert } = useAlerts();
+    const { apiId } = useFinhubConfigs();
+
+    useEffect(() => {
+
+      const loadStockSimbols = async () => {
+        try {
+        const response = await fetch(`https://finnhub.io/api/v1/stock/symbol?exchange=US&token=${apiId}`);
+        const data = await response.json();
+        setStock(data[0].symbol);
+        setStockSymbols(data);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadStockSimbols();
+
+    }, []);
   
     const handleAddAlert = async () => {
       if (!price) {
+        Alert.alert('Price is required to add the alert');
         return;
       }
       addAlert({ stock, price: parseFloat(price) });
@@ -30,29 +58,33 @@ interface AddAlertScreenProps {
   
     return (
       <View style={styles.container}>
-        <Text style={styles.titleStyle}>Add Alert</Text>
+      <Text style={styles.titleStyle}>Add Alert</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#007bff" />
+      ) : (
         <View style={styles.pickerContainer}>
-          <Picker 
+          <Picker
             selectedValue={stock}
             onValueChange={(itemValue) => setStock(itemValue)}
             style={styles.picker}
-            >
-            <Picker.Item label="AAPL" value="AAPL" />
-            <Picker.Item label="GOOG" value="GOOG" />
-            <Picker.Item label="MSFT" value="MSFT" />
+          >
+            {stockSymbols.map((symbol) => (
+              <Picker.Item key={symbol.symbol} label={symbol.symbol} value={symbol.symbol} />
+            ))}
           </Picker>
         </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Price Alert"
-          value={price}
-          onChangeText={setPrice}
-          keyboardType="numeric"
-        />
-        <TouchableOpacity style={styles.button} onPress={handleAddAlert}>
-          <Text style={styles.buttonText}>Add Alert</Text>
-        </TouchableOpacity>
-      </View>
+      )}
+      <TextInput
+        style={styles.input}
+        placeholder="Price Alert"
+        value={price}
+        onChangeText={setPrice}
+        keyboardType="numeric"
+      />
+      <TouchableOpacity style={styles.button} onPress={handleAddAlert}>
+        <Text style={styles.buttonText}>Add Alert</Text>
+      </TouchableOpacity>
+    </View>
     );
   };
 

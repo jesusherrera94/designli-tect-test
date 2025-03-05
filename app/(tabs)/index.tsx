@@ -4,6 +4,7 @@ import { Icon } from 'react-native-elements';
 import { FloatingAction } from 'react-native-floating-action';
 import { useNavigation } from '@react-navigation/native';
 import { useAlerts } from '../../hooks/useAlerts';
+import StockCard  from '../../components/StockCard';
 
 
 export default function HomeScreen() {
@@ -29,10 +30,7 @@ export default function HomeScreen() {
         {localAlerts.length > 0 ? (
           localAlerts.map((alert, index) => (
             <View key={index} style={styles.stepContainer}>
-              <View style={styles.titleContainer}>
-                <Icon size={24} name="bell" color={'#f0f0f0'} type="font-awesome" />
-                <Text style={styles.textTitleContainer}>{alert.stock} - {alert.price}</Text>
-              </View>
+              <StockCard stock={alert.stock} value={'100'} change={'100'} />
             </View>
           ))
         ) : (
@@ -63,6 +61,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   stepContainer: {
+    marginTop: 8,
     gap: 8,
     marginBottom: 8,
   },
