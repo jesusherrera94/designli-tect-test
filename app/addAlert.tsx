@@ -34,8 +34,9 @@ interface AddAlertScreenProps {
         try {
         const response = await fetch(`https://finnhub.io/api/v1/stock/symbol?exchange=US&token=${apiId}`);
         const data = await response.json();
-        setStock(data[0].symbol);
-        setStockSymbols(data);
+        const sortedData = data.sort((a: StockSymbols, b: StockSymbols) => a.symbol.localeCompare(b.symbol));
+        setStock(sortedData[0].symbol);
+        setStockSymbols(sortedData);
         } catch (error) {
           console.log(error);
         } finally {
