@@ -9,6 +9,7 @@ import { Auth0Provider} from 'react-native-auth0';
 import config from '../auth-config.js';
 import { FinhubConfigsProvider } from '../context/FinhubProvider';
 import { LocalStorageProvider } from '../context/LocalStorage';
+import { AlertsProvider } from '../context/AlertsProviders';
 
 
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -36,14 +37,17 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <LocalStorageProvider>
         <FinhubConfigsProvider>
+          <AlertsProvider>
           <Auth0Provider domain={config.domain} clientId={config.clientId}>
             <Stack >
               <Stack.Screen name="index" redirect />
               <Stack.Screen name="login" />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="addAlert" />
               <Stack.Screen name="+not-found" />
             </Stack>
           </Auth0Provider>
+          </AlertsProvider>
         </FinhubConfigsProvider>
       </LocalStorageProvider>
       <StatusBar style="auto" />

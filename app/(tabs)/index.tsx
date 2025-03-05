@@ -1,60 +1,62 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { Icon } from 'react-native-elements';
+import { FloatingAction } from 'react-native-floating-action';
+import { useNavigation } from '@react-navigation/native';
+import { useAlerts } from '../../hooks/useAlerts';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
+
+  const [localAlerts, setLocalAlerts] = useState<any[]>([]);
+
+  const navigation = useNavigation<any>();
+  const { alerts } = useAlerts();
+
+  const handleAddAlert = () => {
+    navigation.navigate('addAlert');
+  }
+
+
+  useEffect(() => {
+    setLocalAlerts(alerts);
+  }, [alerts]);
+
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {localAlerts.length > 0 ? (
+          localAlerts.map((alert, index) => (
+            <View key={index} style={styles.stepContainer}>
+              <View style={styles.titleContainer}>
+                <Icon size={24} name="bell" color={'#f0f0f0'} type="font-awesome" />
+                <Text style={styles.textTitleContainer}>{alert.stock} - {alert.price}</Text>
+              </View>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.textNoAlerts}>No alerts</Text>
+        )}
+      </ScrollView>
+    
+    <FloatingAction
+        actions={[
+          { 
+            name: 'addAlert',
+            icon: <Icon size={24} name="bell" color={'#fff'} type="font-awesome" />,
+          }]}
+        onPressItem={() => handleAddAlert()}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    padding: 16,
+    flexGrow: 1,
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -71,4 +73,17 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
   },
+  textTitleContainer: {
+    color: '#f0f0f0',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  textNoAlerts: {
+    marginTop: '50%',
+    textAlign: 'center',
+    color: '#f0f0f0',
+    fontSize: 28,
+    fontWeight: 'bold',
+  }
 });

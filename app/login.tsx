@@ -120,7 +120,7 @@ export default function Login() {
       }
 
       const userInfo = await userInfoResponse.json();
-      setItem('userAuth', { isUserAuth: true });
+      setItem('userAuth', { isUserAuth: true, accessToken: accessToken });
       navigation.navigate('(tabs)');
       clearInterval(intervalData!);
     } catch (error) {
