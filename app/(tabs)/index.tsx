@@ -48,7 +48,7 @@ export default function HomeScreen() {
 
     socketController.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log('Socket data', data);
+      // console.log('Socket data', data);
       if (data.type === 'trade') {
         setStockData((prevData: any) => ({
           ...prevData,

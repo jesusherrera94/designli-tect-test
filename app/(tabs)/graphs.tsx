@@ -25,14 +25,20 @@ export default function Graphs() {
     borderRadius: 16,
   };
   const chartConfig = {
-    backgroundGradientFrom: '#fff',
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: '#fff',
-    backgroundGradientToOpacity: 0,
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    strokeWidth: 2,
-    barPercentage: 0.5,
-    useShadowColorFromDataset: false,
+    backgroundColor: "#e26a00",
+      backgroundGradientFrom: "#fb8c00",
+      backgroundGradientTo: "#ffa726",
+      decimalPlaces: 2, 
+      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      style: {
+        borderRadius: 16
+      },
+      propsForDots: {
+        r: "6",
+        strokeWidth: "2",
+        stroke: "#ffa726"
+      }
   };
 
   useEffect(() => {
@@ -47,7 +53,8 @@ export default function Graphs() {
         },
       ],
     };
-    setData({ ...construcData });
+    console.log('Data', construcData);
+    setData(construcData);
 
   }, [stocks]);
 
@@ -57,16 +64,19 @@ export default function Graphs() {
 
   return (
     <View style={styles.container}>
-      <BarChart
-          style={graphStyle}
-          data={data}
-          width={screenWidth}
-          height={220}
-          yAxisLabel="$"
-          yAxisSuffix=""
-          chartConfig={chartConfig}
-          verticalLabelRotation={30}
-      />
+      <Text style={styles.titleStyle}>Graphs Views</Text>
+      <View style={styles.graphContainer}>
+        <BarChart
+            style={graphStyle}
+            data={data}
+            width={screenWidth - 40}
+            height={220}
+            yAxisLabel="$"
+            yAxisSuffix=""
+            chartConfig={chartConfig}
+            verticalLabelRotation={30}
+        />
+      </View>
     </View>
   );
 }
@@ -74,6 +84,20 @@ export default function Graphs() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 50,
+    justifyContent: 'center',
+  },
+  graphContainer: {
+    marginTop: 20,
+
+  },
+  titleStyle: {
+    alignContent: 'center',
+    color: '#f0f0f0',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
 });
