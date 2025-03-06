@@ -10,6 +10,7 @@ import config from '../auth-config.js';
 import { FinhubConfigsProvider } from '../context/FinhubProvider';
 import { LocalStorageProvider } from '../context/LocalStorage';
 import { AlertsProvider } from '../context/AlertsProviders';
+import { StocksProvider } from '@/context/StocksProviders';
 
 
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -38,15 +39,17 @@ export default function RootLayout() {
       <LocalStorageProvider>
         <FinhubConfigsProvider>
           <AlertsProvider>
-          <Auth0Provider domain={config.domain} clientId={config.clientId}>
-            <Stack >
-              <Stack.Screen name="index" redirect />
-              <Stack.Screen name="login" />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="addAlert" />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-          </Auth0Provider>
+            <StocksProvider>
+              <Auth0Provider domain={config.domain} clientId={config.clientId}>
+                <Stack >
+                  <Stack.Screen name="index" redirect />
+                  <Stack.Screen name="login" />
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="addAlert" />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+              </Auth0Provider>
+            </StocksProvider>
           </AlertsProvider>
         </FinhubConfigsProvider>
       </LocalStorageProvider>

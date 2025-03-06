@@ -15,6 +15,7 @@ interface LocalStorageProviderProps {
 }
 
 export const LocalStorageProvider = ({ children }: LocalStorageProviderProps) => {
+  
   const getItem = async (key: string) => {
     try {
         const jsonValue = await AsyncStorage.getItem(key);

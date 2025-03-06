@@ -6,18 +6,35 @@ import { useNavigation } from '@react-navigation/native';
 import { useAlerts } from '../../hooks/useAlerts';
 import StockCard from '../../components/StockCard';
 import { useFinhubConfigs } from '../../hooks/useFinhubConfigs';
+import { useStocks } from '@/hooks/useStocks';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 export default function HomeScreen() {
+
   const [localAlerts, setLocalAlerts] = useState<any[]>([]);
   const [stockData, setStockData] = useState<any>({});
   const navigation = useNavigation<any>();
   const { alerts } = useAlerts();
   const { apiId, socket } = useFinhubConfigs();
+  const { setStocks } = useStocks();
   const socketRef = useRef<WebSocket | null>(null);
+  const { getItem, setItem } = useLocalStorage();
 
   const handleAddAlert = () => {
     navigation.navigate('addAlert');
   };
+
+  useEffect(() => {
+    const loadItems = async () => {
+    getItem('alerts').then((data: any) => {
+      console.log('Data', data);
+      if (data) {
+        setLocalAlerts(data);
+      }
+    });
+  }
+    loadItems();
+  }, []);
 
   useEffect(() => {
     const socketController = new WebSocket(`${socket}?token=${apiId}`);
@@ -31,9 +48,14 @@ export default function HomeScreen() {
 
     socketController.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      console.log('Socket data', data);
       if (data.type === 'trade') {
         setStockData((prevData: any) => ({
           ...prevData,
+          [data.data[0].s]: data.data[0],
+        }));
+        setStocks((prevStocks: any) => ({
+          ...prevStocks,
           [data.data[0].s]: data.data[0],
         }));
       }
@@ -49,12 +71,13 @@ export default function HomeScreen() {
 
   useEffect(() => {
     setLocalAlerts(alerts);
+    setItem('alerts', alerts);
   }, [alerts]);
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.titleStyle}>Your Whatchlist</Text>
+        <Text style={styles.titleStyle}>Your Watchlist</Text>
         {localAlerts.length > 0 ? (
           localAlerts.map((alert, index) => (
             <View key={index} style={styles.stepContainer}>

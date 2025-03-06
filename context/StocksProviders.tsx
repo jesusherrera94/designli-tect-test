@@ -1,5 +1,4 @@
-import { createContext, ReactNode } from 'react';
-import configs from '../finhub-config';
+import { createContext, ReactNode, useState } from 'react';
 
 
 const StocksContext = createContext<any>(undefined);
@@ -8,10 +7,17 @@ interface StocksProviderProps {
   children: ReactNode;
 }
 
-export function FinhubConfigsProvider({ children }: StocksProviderProps ) {
-    
+export function StocksProvider({ children }: StocksProviderProps ) {
+
+    const [stocks, setStocks] = useState<any>({});
+
   return (
-    <StocksContext.Provider value={configs}>
+    <StocksContext.Provider value={
+        {
+            stocks,
+            setStocks
+        }
+    }>
       {children}
     </StocksContext.Provider>
   );
